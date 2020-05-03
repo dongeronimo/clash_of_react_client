@@ -14,10 +14,13 @@ import {
     SpotLight, Vector3,
 } from 'three';
 import {TouchableHighlight, View, Text, TouchableOpacity} from "react-native";
+import CameraService from "./CameraService";
 
 
 export default function Hello3d() {
   const [isRendering, setIsRendering] = React.useState<boolean>(false);
+  const testeRotationAxis = new Vector3(0,1,0);
+  let cameraService:CameraService;
   let timeout:any;
   React.useEffect(() => {
     // Clear the animation loop when the component unmounts
@@ -30,12 +33,12 @@ export default function Hello3d() {
     return renderer;
   }
   //Os vetores e pontos da camera.
-  const cameraWorldPosition = new Vector3();
-  const cameraWorldDirection = new Vector3();
-  const cameraLookAt = new Vector3();
-  const vUp = new Vector3();
-  const vRight = new Vector3();
-  const cameraQuaternion = new Quaternion();
+  // const cameraWorldPosition = new Vector3();
+  // const cameraWorldDirection = new Vector3();
+  // const cameraLookAt = new Vector3();
+  // const vUp = new Vector3();
+  // const vRight = new Vector3();
+  // const cameraQuaternion = new Quaternion();
   let camera:PerspectiveCamera;
   //Cria a camera e seta os vetores com os valores iniciais
   function createCamera(eyeX:number, eyeY:number, eyeZ:number, lookX:number, lookY:number, lookZ:number,
@@ -44,22 +47,22 @@ export default function Hello3d() {
       camera.position.set(eyeX, eyeY, eyeZ);
       camera.lookAt(lookX, lookY, lookZ);
 
-      cameraWorldPosition.set(eyeX, eyeY, eyeZ);
-      camera.getWorldDirection(cameraWorldDirection);
-      cameraLookAt.set(lookX, lookY, lookZ);
-      camera.getWorldQuaternion(cameraQuaternion);
-      setVUp();
-      setVRight();
+      // cameraWorldPosition.set(eyeX, eyeY, eyeZ);
+      // camera.getWorldDirection(cameraWorldDirection);
+      // cameraLookAt.set(lookX, lookY, lookZ);
+      // camera.getWorldQuaternion(cameraQuaternion);
+      // setVUp();
+      // setVRight();
       return camera;
   }
-  function setVUp(){
-      vUp.set(0,1,0);
-      vUp.applyQuaternion(cameraQuaternion);
-  }
-  function setVRight(){
-      vRight.set(1,0,0);
-      vRight.applyQuaternion(cameraQuaternion);
-  }
+  // function setVUp(){
+  //     vUp.set(0,1,0);
+  //     vUp.applyQuaternion(cameraQuaternion);
+  // }
+  // function setVRight(){
+  //     vRight.set(1,0,0);
+  //     vRight.applyQuaternion(cameraQuaternion);
+  // }
   function printVector(text:string, vec:Vector3){
       console.log(`${text}: ${vec.x}, ${vec.y}, ${vec.z}`);
   }
@@ -79,24 +82,11 @@ export default function Hello3d() {
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>{
                       if(isRendering){
-                          //Como rotacionar o olho ao redor do focus?
-                          //1)Preciso pegar o vetor entre o foco e o olho, indo do foco pro olho.
-                          const invertedNormalizedCameraDirectionVector = cameraWorldDirection.multiplyScalar(-1);
-                          const distanceBetweenLookAndCamera = cameraWorldPosition.sub(cameraLookAt).length();
-                          const invertedCameraDirection = invertedNormalizedCameraDirectionVector.multiplyScalar(distanceBetweenLookAndCamera);
-                          printVector("inverted camera direction", invertedCameraDirection);
-                          //2)Rotaciono o vetor da posicao da camera
-                          invertedCameraDirection.applyAxisAngle(new Vector3(0,1,0), ang*Math.PI/180);
-                          printVector("rotated vector", invertedCameraDirection);
-                          //3)Altera o eye
-                          camera.position.copy(invertedCameraDirection);
-                          //4)Refaz o lookat com o novo vetor
-                          camera.lookAt(cameraLookAt)
-                          camera.updateMatrix();
+                          cameraService.rotateAroundLookUpPoint(5, testeRotationAxis);
                       }
                   }}>
                       <View style={{padding:4, margin:2, backgroundColor:'beige', }}>
-                          <Text>Run Test</Text>
+                          <Text>Rotate around look at</Text>
                       </View>
                   </TouchableOpacity>
           </View>
@@ -112,7 +102,7 @@ export default function Hello3d() {
                   const sceneColor = 0x6ad6f0;
                   const renderer = createRenderer(gl, width, height, sceneColor);
                   camera = createCamera(2,5,5, 0,0,0,width, height);
-
+                  cameraService = new CameraService(camera, new Vector3(0,0,0));
                   const scene = new Scene();
                   scene.fog = new Fog(sceneColor, 1, 10000);
                   scene.add(new GridHelper(10, 10));
@@ -143,15 +133,6 @@ export default function Hello3d() {
                       update();
                       renderer.render(scene, camera);
                       gl.endFrameEXP();
-                      camera.getWorldPosition(cameraWorldPosition);
-                      camera.getWorldDirection(cameraWorldDirection);
-                      camera.getWorldQuaternion(cameraQuaternion);
-
-                      // printVector("camera world position", cameraWorldPosition);
-                      // printVector("camera world direction", cameraWorldDirection);
-                      // printVector("camera look at", cameraLookAt);
-                      // printVector("view up", vUp);
-                      // printVector("view right", vRight);
                   };
                   render();
               }}
