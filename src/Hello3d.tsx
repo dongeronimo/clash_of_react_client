@@ -66,17 +66,27 @@ export default function Hello3d() {
 
   return (
       <View>
-          <View style={{backgroundColor:'red', height:20}}/>
-          <View>
-              <TouchableOpacity onPress={()=>{
-                  console.log(`is rendering:${!isRendering}`)
-                  clearTimeout(timeout);
-                  setIsRendering(!isRendering);
-              }}>
-                  <View style={{padding:4, margin:2, maxWidth:62, backgroundColor:'beige', }}>
-                      <Text>{isRendering?"Turn Off":"Turn On"}</Text>
-                  </View>
-              </TouchableOpacity>
+          <View style={{ height:22}}/>
+          <View style={{display:'flex', flexDirection:'row'}}>
+                  <TouchableOpacity onPress={()=>{
+                      console.log(`is rendering:${!isRendering}`)
+                      clearTimeout(timeout);
+                      setIsRendering(!isRendering);
+                  }}>
+                      <View style={{padding:4, margin:2, backgroundColor:'beige', }}>
+                          <Text>{isRendering?"Turn Off":"Turn On"}</Text>
+                      </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>{
+                      if(isRendering){
+                          camera.position.set(5,5,5);
+                          camera.updateMatrix();
+                      }
+                  }}>
+                      <View style={{padding:4, margin:2, backgroundColor:'beige', }}>
+                          <Text>Run Test</Text>
+                      </View>
+                  </TouchableOpacity>
           </View>
           {isRendering &&
           <GLView
