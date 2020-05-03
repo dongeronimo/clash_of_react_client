@@ -63,7 +63,7 @@ export default function Hello3d() {
   function printVector(text:string, vec:Vector3){
       console.log(`${text}: ${vec.x}, ${vec.y}, ${vec.z}`);
   }
-
+  let ang:number = 5;
   return (
       <View>
           <View style={{ height:22}}/>
@@ -79,7 +79,19 @@ export default function Hello3d() {
                   </TouchableOpacity>
                   <TouchableOpacity onPress={()=>{
                       if(isRendering){
-                          camera.position.set(5,5,5);
+                          //Como rotacionar o olho ao redor do focus?
+                          //1)Preciso pegar o vetor entre o foco e o olho, indo do foco pro olho.
+                          const invertedNormalizedCameraDirectionVector = cameraWorldDirection.multiplyScalar(-1);
+                          const distanceBetweenLookAndCamera = cameraWorldPosition.sub(cameraLookAt).length();
+                          const invertedCameraDirection = invertedNormalizedCameraDirectionVector.multiplyScalar(distanceBetweenLookAndCamera);
+                          printVector("inverted camera direction", invertedCameraDirection);
+                          //2)Rotaciono o vetor da posicao da camera
+                          invertedCameraDirection.applyAxisAngle(new Vector3(0,1,0), ang*Math.PI/180);
+                          printVector("rotated vector", invertedCameraDirection);
+                          //3)Altera o eye
+                          camera.position.copy(invertedCameraDirection);
+                          //4)Refaz o lookat com o novo vetor
+                          camera.lookAt(cameraLookAt)
                           camera.updateMatrix();
                       }
                   }}>
