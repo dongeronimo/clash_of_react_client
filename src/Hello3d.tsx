@@ -13,9 +13,11 @@ import {
     Scene,
     SpotLight, Vector3,
 } from 'three';
+import {TouchableHighlight, View, Text, TouchableOpacity} from "react-native";
 
 
 export default function Hello3d() {
+  const [isRendering, setIsRendering] = React.useState<boolean>(false);
   let timeout:any;
   React.useEffect(() => {
     // Clear the animation loop when the component unmounts
@@ -63,60 +65,77 @@ export default function Hello3d() {
   }
 
   return (
-    <GLView
-      style={{ flex: 1 }}
-      onContextCreate={async (gl: ExpoWebGLRenderingContext) => {
-        const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
-        const sceneColor = 0x6ad6f0;
-        const renderer = createRenderer(gl, width, height, sceneColor);
-        camera = createCamera(2,5,5, 0,0,0,width, height);
+      <View>
+          <View style={{backgroundColor:'red', height:20}}/>
+          <View>
+              <TouchableOpacity onPress={()=>{
+                  console.log(`is rendering:${!isRendering}`)
+                  clearTimeout(timeout);
+                  setIsRendering(!isRendering);
+              }}>
+                  <View style={{padding:4, margin:2, maxWidth:62, backgroundColor:'beige', }}>
+                      <Text>{isRendering?"Turn Off":"Turn On"}</Text>
+                  </View>
+              </TouchableOpacity>
+          </View>
+          {isRendering &&
+          <GLView
+              style={{  backgroundColor:'green', height:400}}
+              onLayout={(layout)=>{
+                 console.log("onLayout", layout)
+              }}
+              onContextCreate={async (gl: ExpoWebGLRenderingContext) => {
+                  console.log("onContextCreate")
+                  const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
+                  const sceneColor = 0x6ad6f0;
+                  const renderer = createRenderer(gl, width, height, sceneColor);
+                  camera = createCamera(2,5,5, 0,0,0,width, height);
 
-        const scene = new Scene();
-        scene.fog = new Fog(sceneColor, 1, 10000);
-        scene.add(new GridHelper(10, 10));
+                  const scene = new Scene();
+                  scene.fog = new Fog(sceneColor, 1, 10000);
+                  scene.add(new GridHelper(10, 10));
 
-        const ambientLight = new AmbientLight(0x101010);
-        scene.add(ambientLight);
+                  const ambientLight = new AmbientLight(0x101010);
+                  scene.add(ambientLight);
 
-        const pointLight = new PointLight(0xffffff, 2, 1000, 1);
-        pointLight.position.set(0, 200, 200);
-        scene.add(pointLight);
+                  const pointLight = new PointLight(0xffffff, 2, 1000, 1);
+                  pointLight.position.set(0, 200, 200);
+                  scene.add(pointLight);
 
-        const spotLight = new SpotLight(0xffffff, 0.5);
-        spotLight.position.set(0, 500, 100);
-        spotLight.lookAt(scene.position);
-        scene.add(spotLight);
+                  const spotLight = new SpotLight(0xffffff, 0.5);
+                  spotLight.position.set(0, 500, 100);
+                  spotLight.lookAt(scene.position);
+                  scene.add(spotLight);
 
-        const cube = new IconMesh();
-        scene.add(cube);
+                  const cube = new IconMesh();
+                  scene.add(cube);
 
-        function update() {
-          cube.rotation.y += 0.05;
-          cube.rotation.x += 0.025;
-        }
+                  function update() {
+                      cube.rotation.y += 0.05;
+                      cube.rotation.x += 0.025;
+                  }
 
-        // Setup an animation loop
-        const render = () => {
-          timeout = requestAnimationFrame(render);
-          update();
-          renderer.render(scene, camera);
-          gl.endFrameEXP();
-          camera.getWorldPosition(cameraWorldPosition);
-          camera.getWorldDirection(cameraWorldDirection);
-          camera.getWorldQuaternion(cameraQuaternion);
+                  // Setup an animation loop
+                  const render = () => {
+                      timeout = requestAnimationFrame(render);
+                      update();
+                      renderer.render(scene, camera);
+                      gl.endFrameEXP();
+                      camera.getWorldPosition(cameraWorldPosition);
+                      camera.getWorldDirection(cameraWorldDirection);
+                      camera.getWorldQuaternion(cameraQuaternion);
 
-          printVector("camera world position", cameraWorldPosition);
-          printVector("camera world direction", cameraWorldDirection);
-          printVector("camera look at", cameraLookAt);
-          printVector("view up", vUp);
-          printVector("view right", vRight);
+                      // printVector("camera world position", cameraWorldPosition);
+                      // printVector("camera world direction", cameraWorldDirection);
+                      // printVector("camera look at", cameraLookAt);
+                      // printVector("view up", vUp);
+                      // printVector("view right", vRight);
+                  };
+                  render();
+              }}
+          />}
+      </View>
 
-          
-
-        };
-        render();
-      }}
-    />
   );
 }
 
