@@ -15,7 +15,7 @@ import {
 } from 'three';
 
 export default function Hello3d() {
-  let timeout;
+  let timeout:any;
 
   React.useEffect(() => {
     // Clear the animation loop when the component unmounts
@@ -81,8 +81,8 @@ class IconMesh extends Mesh {
     super(
       new BoxBufferGeometry(1.0, 1.0, 1.0),
       new MeshStandardMaterial({
-        map: new TextureLoader().load(require('./assets/icon.png')),
-        // color: 0xff0000
+        //map: new TextureLoader().load(require('./assets/icon.png')),
+         color: 0xff0000
       })
     );
   }
