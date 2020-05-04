@@ -14,7 +14,8 @@ import {
     SpotLight, Vector3,
 } from 'three';
 import {TouchableHighlight, View, Text, TouchableOpacity} from "react-native";
-import CameraService from "./CameraService";
+import CameraService from "./services/CameraService";
+import RendererService from "./services/RendererService";
 
 
 export default function Hello3d() {
@@ -26,19 +27,7 @@ export default function Hello3d() {
     // Clear the animation loop when the component unmounts
     return () => clearTimeout(timeout);
   }, []);
-  function createRenderer(gl: ExpoWebGLRenderingContext, width:number, height:number, sceneColor:number):Renderer{
-    const renderer = new Renderer({gl});
-    renderer.setSize(width, height);
-    renderer.setClearColor(sceneColor);
-    return renderer;
-  }
-  //Os vetores e pontos da camera.
-  // const cameraWorldPosition = new Vector3();
-  // const cameraWorldDirection = new Vector3();
-  // const cameraLookAt = new Vector3();
-  // const vUp = new Vector3();
-  // const vRight = new Vector3();
-  // const cameraQuaternion = new Quaternion();
+
   let camera:PerspectiveCamera;
   //Cria a camera e seta os vetores com os valores iniciais
   function createCamera(eyeX:number, eyeY:number, eyeZ:number, lookX:number, lookY:number, lookZ:number,
@@ -46,27 +35,12 @@ export default function Hello3d() {
       const camera = new PerspectiveCamera(70, width / height, 0.01, 1000);
       camera.position.set(eyeX, eyeY, eyeZ);
       camera.lookAt(lookX, lookY, lookZ);
-
-      // cameraWorldPosition.set(eyeX, eyeY, eyeZ);
-      // camera.getWorldDirection(cameraWorldDirection);
-      // cameraLookAt.set(lookX, lookY, lookZ);
-      // camera.getWorldQuaternion(cameraQuaternion);
-      // setVUp();
-      // setVRight();
       return camera;
   }
-  // function setVUp(){
-  //     vUp.set(0,1,0);
-  //     vUp.applyQuaternion(cameraQuaternion);
-  // }
-  // function setVRight(){
-  //     vRight.set(1,0,0);
-  //     vRight.applyQuaternion(cameraQuaternion);
-  // }
   function printVector(text:string, vec:Vector3){
       console.log(`${text}: ${vec.x}, ${vec.y}, ${vec.z}`);
   }
-  let ang:number = 5;
+
   return (
       <View>
           <View style={{ height:22}}/>
@@ -93,18 +67,13 @@ export default function Hello3d() {
           {isRendering &&
           <GLView
               style={{  backgroundColor:'green', height:400}}
-              onLayout={(layout)=>{
-                 console.log("onLayout", layout)
-              }}
               onContextCreate={async (gl: ExpoWebGLRenderingContext) => {
-                  console.log("onContextCreate")
                   const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
-                  const sceneColor = 0x6ad6f0;
-                  const renderer = createRenderer(gl, width, height, sceneColor);
+                  const renderer = RendererService.createRenderer(gl, width, height);
                   camera = createCamera(2,5,5, 0,0,0,width, height);
                   cameraService = new CameraService(camera, new Vector3(0,0,0));
                   const scene = new Scene();
-                  scene.fog = new Fog(sceneColor, 1, 10000);
+                  scene.fog = new Fog(RendererService.SCENE_COLOR, 1, 10000);
                   scene.add(new GridHelper(10, 10));
 
                   const ambientLight = new AmbientLight(0x101010);
