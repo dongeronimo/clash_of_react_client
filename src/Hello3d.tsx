@@ -16,6 +16,7 @@ import {
 import {TouchableHighlight, View, Text, TouchableOpacity} from "react-native";
 import CameraService from "./services/CameraService";
 import RendererService from "./services/RendererService";
+import TurnOnTurnOffButton from "./view/testes/TurnOnTurnOffButton";
 
 
 export default function Hello3d() {
@@ -38,15 +39,7 @@ export default function Hello3d() {
       <View>
           <View style={{ height:22}}/>
           <View style={{display:'flex', flexDirection:'row'}}>
-                  <TouchableOpacity onPress={()=>{
-                      console.log(`is rendering:${!isRendering}`)
-                      clearTimeout(timeout);
-                      setIsRendering(!isRendering);
-                  }}>
-                      <View style={{padding:4, margin:2, backgroundColor:'beige', }}>
-                          <Text>{isRendering?"Turn Off":"Turn On"}</Text>
-                      </View>
-                  </TouchableOpacity>
+                  <TurnOnTurnOffButton isRendering={isRendering} timeout={timeout} setRendering={setIsRendering}/>
                   <TouchableOpacity onPress={()=>{
                       if(isRendering){
                           cameraService.rotateAroundLookUpPoint(5, testeRotationAxis);
