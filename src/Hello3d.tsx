@@ -29,14 +29,7 @@ export default function Hello3d() {
   }, []);
 
   let camera:PerspectiveCamera;
-  //Cria a camera e seta os vetores com os valores iniciais
-  function createCamera(eyeX:number, eyeY:number, eyeZ:number, lookX:number, lookY:number, lookZ:number,
-                        width:number, height:number):PerspectiveCamera{
-      const camera = new PerspectiveCamera(70, width / height, 0.01, 1000);
-      camera.position.set(eyeX, eyeY, eyeZ);
-      camera.lookAt(lookX, lookY, lookZ);
-      return camera;
-  }
+
   function printVector(text:string, vec:Vector3){
       console.log(`${text}: ${vec.x}, ${vec.y}, ${vec.z}`);
   }
@@ -70,7 +63,7 @@ export default function Hello3d() {
               onContextCreate={async (gl: ExpoWebGLRenderingContext) => {
                   const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
                   const renderer = RendererService.createRenderer(gl, width, height);
-                  camera = createCamera(2,5,5, 0,0,0,width, height);
+                  camera = CameraService.createCamera(2,5,5, 0,0,0,width, height);
                   cameraService = new CameraService(camera, new Vector3(0,0,0));
                   const scene = new Scene();
                   scene.fog = new Fog(RendererService.SCENE_COLOR, 1, 10000);
