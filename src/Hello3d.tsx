@@ -17,6 +17,7 @@ import CameraService from "./services/CameraService";
 import RendererService from "./services/RendererService";
 import TurnOnTurnOffButton from "./view/testes/TurnOnTurnOffButton";
 import TestRotateAroundLookAtButton from "./view/testes/TestRotateAroundLookAtButton";
+import TestChangeLookAtButton from "./view/testes/ChangeLookAtButton";
 
 
 export default function Hello3d() {
@@ -41,6 +42,7 @@ export default function Hello3d() {
           <View style={{display:'flex', flexDirection:'row'}}>
                   <TurnOnTurnOffButton isRendering={isRendering} timeout={timeout} setRendering={setIsRendering}/>
                   <TestRotateAroundLookAtButton isRendering={isRendering} cameraService={cameraService!!}/>
+                  <TestChangeLookAtButton isRendering={isRendering} cameraService={cameraService!!}/>
           </View>
           {isRendering &&
           <GLView

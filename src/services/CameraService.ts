@@ -27,7 +27,14 @@ export default class CameraService {
         this.updateInnerState();
     }
 
-    updateInnerState = () => {
+    setLookAt = (lookAtPos:Vector3)=>{
+        this.cameraLookAt.copy(lookAtPos);
+        this.camera.lookAt(lookAtPos);
+        this.camera.updateMatrix();
+        this.updateInnerState();
+    }
+
+    private updateInnerState = () => {
         this.camera.getWorldPosition(this.cameraWorldPosition);
         this.camera.getWorldDirection(this.cameraWorldDirection);
         this.cameraQuaternion.copy(this.camera.quaternion);
@@ -39,7 +46,6 @@ export default class CameraService {
     readonly rotateAroundLookUpPoint = (angleInDegs: number, axis: Vector3) => {
         //1)Preciso pegar o vetor entre o foco e o olho, indo do foco pro olho.
         const invertedNormalizedCameraDirectionVector = this.cameraWorldDirection.multiplyScalar(-1);
-
         const distanceBetweenLookAndCamera = this.cameraWorldPosition.sub(this.cameraLookAt).length();
         const invertedCameraDirection = invertedNormalizedCameraDirectionVector
             .multiplyScalar(distanceBetweenLookAndCamera);
@@ -51,7 +57,6 @@ export default class CameraService {
         //4)Refaz o lookat com o novo vetor
         this.camera.lookAt(this.cameraLookAt)
         this.camera.updateMatrix();
-
         this.updateInnerState();
     }
 
