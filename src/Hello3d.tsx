@@ -1,5 +1,4 @@
 import { ExpoWebGLRenderingContext, GLView } from 'expo-gl';
-import { Renderer, TextureLoader } from 'expo-three';
 import * as React from 'react';
 import {
     AmbientLight,
@@ -13,7 +12,7 @@ import {
     Scene,
     SpotLight, Vector3,
 } from 'three';
-import {TouchableHighlight, View, Text, TouchableOpacity} from "react-native";
+import {View} from "react-native";
 import CameraService from "./services/CameraService";
 import RendererService from "./services/RendererService";
 import TurnOnTurnOffButton from "./view/testes/TurnOnTurnOffButton";
@@ -51,7 +50,7 @@ export default function Hello3d() {
                   const renderer = RendererService.createRenderer(gl, width, height);
                   camera = CameraService.createCamera(2,5,5, 0,0,0,width, height);
                   setCameraService(new CameraService(camera, new Vector3(0,0,0)))
-                  //cameraService = new CameraService(camera, new Vector3(0,0,0));
+ 
                   const scene = new Scene();
                   scene.fog = new Fog(RendererService.SCENE_COLOR, 1, 10000);
                   scene.add(new GridHelper(10, 10));
