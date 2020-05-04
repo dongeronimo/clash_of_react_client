@@ -9,6 +9,15 @@ export default class CameraService {
     readonly cameraQuaternion = new Quaternion();
     readonly camera: PerspectiveCamera;
 
+    static createCamera(eyeX:number, eyeY:number, eyeZ:number, lookX:number, lookY:number, lookZ:number,
+                        width:number, height:number):PerspectiveCamera{
+        const camera = new PerspectiveCamera(70, width / height, 0.01, 1000);
+        camera.position.set(eyeX, eyeY, eyeZ);
+        camera.lookAt(lookX, lookY, lookZ);
+
+        return camera;
+    }
+
     printVector(text: string, vec: Vector3) {
         console.log(`${text}: ${vec.x}, ${vec.y}, ${vec.z}`);
     }
@@ -56,11 +65,5 @@ export default class CameraService {
         this.vRight.applyQuaternion(this.cameraQuaternion);
     }
 
-    static createCamera(eyeX:number, eyeY:number, eyeZ:number, lookX:number, lookY:number, lookZ:number,
-                          width:number, height:number):PerspectiveCamera{
-        const camera = new PerspectiveCamera(70, width / height, 0.01, 1000);
-        camera.position.set(eyeX, eyeY, eyeZ);
-        camera.lookAt(lookX, lookY, lookZ);
-        return camera;
-    }
+
 }

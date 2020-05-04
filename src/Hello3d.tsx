@@ -17,12 +17,13 @@ import {TouchableHighlight, View, Text, TouchableOpacity} from "react-native";
 import CameraService from "./services/CameraService";
 import RendererService from "./services/RendererService";
 import TurnOnTurnOffButton from "./view/testes/TurnOnTurnOffButton";
+import TestRotateAroundLookAtButton from "./view/testes/TestRotateAroundLookAtButton";
 
 
 export default function Hello3d() {
   const [isRendering, setIsRendering] = React.useState<boolean>(false);
-  const testeRotationAxis = new Vector3(0,1,0);
-  let cameraService:CameraService;
+  const [cameraService, setCameraService] = React.useState<CameraService|null>(null);
+  //let cameraService: CameraService;
   let timeout:any;
   React.useEffect(() => {
     // Clear the animation loop when the component unmounts
@@ -40,15 +41,7 @@ export default function Hello3d() {
           <View style={{ height:22}}/>
           <View style={{display:'flex', flexDirection:'row'}}>
                   <TurnOnTurnOffButton isRendering={isRendering} timeout={timeout} setRendering={setIsRendering}/>
-                  <TouchableOpacity onPress={()=>{
-                      if(isRendering){
-                          cameraService.rotateAroundLookUpPoint(5, testeRotationAxis);
-                      }
-                  }}>
-                      <View style={{padding:4, margin:2, backgroundColor:'beige', }}>
-                          <Text>Rotate around look at</Text>
-                      </View>
-                  </TouchableOpacity>
+                  <TestRotateAroundLookAtButton isRendering={isRendering} cameraService={cameraService!!}/>
           </View>
           {isRendering &&
           <GLView
@@ -57,7 +50,8 @@ export default function Hello3d() {
                   const { drawingBufferWidth: width, drawingBufferHeight: height } = gl;
                   const renderer = RendererService.createRenderer(gl, width, height);
                   camera = CameraService.createCamera(2,5,5, 0,0,0,width, height);
-                  cameraService = new CameraService(camera, new Vector3(0,0,0));
+                  setCameraService(new CameraService(camera, new Vector3(0,0,0)))
+                  //cameraService = new CameraService(camera, new Vector3(0,0,0));
                   const scene = new Scene();
                   scene.fog = new Fog(RendererService.SCENE_COLOR, 1, 10000);
                   scene.add(new GridHelper(10, 10));
