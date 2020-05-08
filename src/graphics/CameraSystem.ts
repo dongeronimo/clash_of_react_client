@@ -1,8 +1,8 @@
 /////TODO: 1) Criar o group 
 /////TODO: 2) Adicionar o group à cena
 /////TODO: 3) Ter referência à camera
-//TODO: 4) Atualizar camera no render()
-//TODO: 5) Translate
+/////TODO: 4) Atualizar camera no render()
+/////TODO: 5) Translate
 //TODO: 6) Rotate around center
 //TODO: 7) Dolly in/out
 //TODO: 8) Rotate around eye
@@ -38,7 +38,29 @@ export class CameraSystem{
         camera.lookAt(lookX, lookY, lookZ);
         return camera;
     }
-    
+    private readonly cameraWorldPosition = new Vector3();
+    private readonly cameraWorldLookAtPosition = new Vector3();
+    update(){
+        this.getWorldEyeAndFocusPositions();
+        this.setCameraPositionAndLookAt();
+    }
+    private getWorldEyeAndFocusPositions(){
+        this.eye.getWorldPosition(this.cameraWorldPosition);
+        this.group.getWorldPosition(this.cameraWorldLookAtPosition);
+    }
+    private setCameraPositionAndLookAt(){
+        this.camera.position.copy(this.cameraWorldPosition);
+        this.camera.lookAt(this.cameraWorldLookAtPosition);
+        this.camera.updateMatrix();
+    }
+    setPosition(x:number, y:number, z:number){
+        this.group.position.set(x, y, z);
+        this.update();
+    }    
+    getPosition():Vector3{
+        return this.cameraWorldLookAtPosition;
+    }
+
 }
 
 

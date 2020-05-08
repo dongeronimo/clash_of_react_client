@@ -95,6 +95,9 @@ export default function Hello3d() {
                   const cameraSystem:CameraSystem = new CameraSystem(scene, new Vector3(0,0,0), new Vector3(3,2,0),width, height);
 
                   function update() {
+                    cameraSystem.setPosition(cameraSystem.getPosition().x+0.01, 0, 0);
+                    //cameraSystem.update();
+
                     //Rotação e translacao do grupo
                     // myGroup.rotation.y += 0.05;
                     // myGroup.position.x += 0.01;
