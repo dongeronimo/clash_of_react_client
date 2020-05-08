@@ -39,7 +39,10 @@ export default function Hello3d() {
   function printVector(text:string, vec:Vector3){
       console.log(`${text}: ${vec.x}, ${vec.y}, ${vec.z}`);
   }
-
+  //TODO 1) Criar um group de dois objetos, um pra camera outro pro foco. - OK
+  //TODO 2) Posiçao da camera ser sempre igual a posicao do objeto da camera
+  //TODO 3) Camera estar sempre voltada pro foco
+  //TODO 4) Camera nao bugar quando transladar e rotacionar ao redor do centro.
   return (
       <View>
           <View style={{ height:22}}/>
@@ -77,9 +80,10 @@ export default function Hello3d() {
                   //scene.add(cube);
 
                   cone = new ConeMesh();
+                  cone.visible = false
                   //scene.add(cone);
 
-                  cone.position.set(3,0,0);
+                  cone.position.set(3,2,0);
                   
                   const myGroup = new Group();
                   myGroup.add(cube)
@@ -90,8 +94,29 @@ export default function Hello3d() {
                   // cone.updateMatrix()
 
                   function update() {
-                    myGroup.rotation.y += 0.05
-                    myGroup.position.x += 0.01
+                    //Rotação e translacao do grupo
+                    myGroup.rotation.y += 0.05;
+                    myGroup.position.x += 0.01;
+                    //Pega os atributos necessários
+                    const cameraWorldPosition = new Vector3();
+                    cone.getWorldPosition(cameraWorldPosition);
+                    const cameraWorldLookAt = new Vector3();
+                    myGroup.getWorldPosition(cameraWorldLookAt);
+                    //move camera
+                    camera.position.copy(cameraWorldPosition);
+                    camera.lookAt(cameraWorldLookAt);
+                    camera.updateMatrix();
+
+                    // myGroup.rotation.y += 0.05;
+                    // myGroup.position.x += 0.01;
+                    // const cameraPosition = new Vector3(0,0,0);
+                    // cone.getWorldPosition(cameraPosition);
+                    // const cameraQuaternion = new Quaternion();
+                    // myGroup.getWorldQuaternion(cameraQuaternion)
+                    // camera.quaternion.copy(cameraQuaternion);
+                    // camera.updateMatrix();
+                    // //camera.position.copy(cameraPosition);
+                    // camera.updateMatrix();
                       //  cube.rotation.y += 0.05;
                       //  cube.rotation.x += 0.025;
                   }
