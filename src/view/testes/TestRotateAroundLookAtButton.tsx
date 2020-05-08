@@ -12,7 +12,7 @@ export default function TestRotateAroundLookAtButton(props:TestRotateAroundLookA
     return(
         <TouchableOpacity onPress={()=>{
             if(props.isRendering){
-                props.cameraService.rotateAroundLookUpPoint(5, testeRotationAxis, new Vector3(1,0,0));
+                props.cameraService.rotateAroundLookUpPoint(5, testeRotationAxis, new Vector3(0,0,0));
             }
         }}>
             <View style={{padding:4, margin:2, backgroundColor:'beige', }}>

@@ -10,7 +10,7 @@ import {
     PerspectiveCamera,
     PointLight, Quaternion,
     Scene,
-    SpotLight, Vector3,
+    SpotLight, Vector3, ConeGeometry, MeshBasicMaterial, Matrix4, Euler,
 } from 'three';
 import {View} from "react-native";
 import CameraService from "./services/CameraService";
@@ -24,6 +24,9 @@ export default function Hello3d() {
   const [isRendering, setIsRendering] = React.useState<boolean>(false);
   const [cameraService, setCameraService] = React.useState<CameraService|null>(null);
   const [lookAt, setLookAt] = React.useState<Vector3>(new Vector3());
+
+  let cube:IconMesh;
+  let cone:ConeMesh
   //let cameraService: CameraService;
   let timeout:any;
   React.useEffect(() => {
@@ -69,19 +72,27 @@ export default function Hello3d() {
                   spotLight.position.set(0, 500, 100);
                   spotLight.lookAt(scene.position);
                   scene.add(spotLight);
-
-                  const cube = new IconMesh();
+                  
+                  cube = new IconMesh();
                   scene.add(cube);
 
-                  function update() {
-                      cube.rotation.y += 0.05;
-                      cube.rotation.x += 0.025;
-                  }
+                  cone = new ConeMesh();
+                  scene.add(cone);
+
+                  cone.position.set(3,0,0);
+                  //cone.rotateX(-90 * Math.PI/180)
+                  cone.updateMatrix();
+                  
+                  
+                  // function update() {
+                  //     cube.rotation.y += 0.05;
+                  //     cube.rotation.x += 0.025;
+                  // }
 
                   // Setup an animation loop
                   const render = () => {
                       timeout = requestAnimationFrame(render);
-                      update();
+                      //update();
                       renderer.render(scene, camera);
                       gl.endFrameEXP();
                   };
@@ -92,11 +103,24 @@ export default function Hello3d() {
 
   );
 }
-
+class ConeMesh extends Mesh {
+  constructor(){
+    super( 
+      new ConeGeometry(0.2, 0.6, 16), // 0.5, 0.4, 16),
+      new MeshStandardMaterial({
+        //map: new TextureLoader().load(require('./assets/icon.png')),
+         color: 0xffff00
+      }));
+      this.applyMatrix4(new Matrix4().makeRotationFromEuler(new Euler(
+        0*Math.PI/180,
+        0*Math.PI/180,
+        90*Math.PI/180))) //new Vector3(Math.PI / 2, Math.PI, 0)))
+  }
+}
 class IconMesh extends Mesh {
   constructor() {
     super(
-      new BoxBufferGeometry(1.0, 1.0, 1.0),
+      new BoxBufferGeometry(0.5, 0.5, 0.5),
       new MeshStandardMaterial({
         //map: new TextureLoader().load(require('./assets/icon.png')),
          color: 0xff0000
