@@ -5,13 +5,14 @@ import {Vector3} from "three";
 type TestRotateAroundLookAtButtonProps = {
     isRendering:boolean,
     cameraService:CameraService,
+    lookAt:Vector3,
 }
 export default function TestRotateAroundLookAtButton(props:TestRotateAroundLookAtButtonProps) {
     const testeRotationAxis = new Vector3(0,1,0);
     return(
         <TouchableOpacity onPress={()=>{
             if(props.isRendering){
-                props.cameraService.rotateAroundLookUpPoint(5, testeRotationAxis);
+                props.cameraService.rotateAroundLookUpPoint(5, testeRotationAxis, new Vector3(1,0,0));
             }
         }}>
             <View style={{padding:4, margin:2, backgroundColor:'beige', }}>

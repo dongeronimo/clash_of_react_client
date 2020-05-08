@@ -23,6 +23,7 @@ import TestChangeLookAtButton from "./view/testes/ChangeLookAtButton";
 export default function Hello3d() {
   const [isRendering, setIsRendering] = React.useState<boolean>(false);
   const [cameraService, setCameraService] = React.useState<CameraService|null>(null);
+  const [lookAt, setLookAt] = React.useState<Vector3>(new Vector3());
   //let cameraService: CameraService;
   let timeout:any;
   React.useEffect(() => {
@@ -41,8 +42,8 @@ export default function Hello3d() {
           <View style={{ height:22}}/>
           <View style={{display:'flex', flexDirection:'row'}}>
                   <TurnOnTurnOffButton isRendering={isRendering} timeout={timeout} setRendering={setIsRendering}/>
-                  <TestRotateAroundLookAtButton isRendering={isRendering} cameraService={cameraService!!}/>
-                  <TestChangeLookAtButton isRendering={isRendering} cameraService={cameraService!!}/>
+                  <TestRotateAroundLookAtButton isRendering={isRendering} cameraService={cameraService!!} lookAt={lookAt}/>
+                  <TestChangeLookAtButton isRendering={isRendering} cameraService={cameraService!!} lookAt={lookAt} setLookAt={setLookAt}/>
           </View>
           {isRendering &&
           <GLView
@@ -52,7 +53,7 @@ export default function Hello3d() {
                   const renderer = RendererService.createRenderer(gl, width, height);
                   camera = CameraService.createCamera(2,5,5, 0,0,0,width, height);
                   setCameraService(new CameraService(camera, new Vector3(0,0,0)))
- 
+                  setLookAt(new Vector3(0,0,0));
                   const scene = new Scene();
                   scene.fog = new Fog(RendererService.SCENE_COLOR, 1, 10000);
                   scene.add(new GridHelper(10, 10));
