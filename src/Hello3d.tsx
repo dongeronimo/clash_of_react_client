@@ -10,7 +10,7 @@ import {
     PerspectiveCamera,
     PointLight, Quaternion,
     Scene,
-    SpotLight, Vector3, ConeGeometry, MeshBasicMaterial, Matrix4, Euler,
+    SpotLight, Vector3, ConeGeometry, MeshBasicMaterial, Matrix4, Euler,Group
 } from 'three';
 import {View} from "react-native";
 import CameraService from "./services/CameraService";
@@ -74,25 +74,32 @@ export default function Hello3d() {
                   scene.add(spotLight);
                   
                   cube = new IconMesh();
-                  scene.add(cube);
+                  //scene.add(cube);
 
                   cone = new ConeMesh();
-                  scene.add(cone);
+                  //scene.add(cone);
 
                   cone.position.set(3,0,0);
-                  //cone.rotateX(-90 * Math.PI/180)
-                  cone.updateMatrix();
                   
-                  
-                  // function update() {
-                  //     cube.rotation.y += 0.05;
-                  //     cube.rotation.x += 0.025;
-                  // }
+                  const myGroup = new Group();
+                  myGroup.add(cube)
+                  myGroup.add(cone);
+
+                  scene.add(myGroup);
+                  // cone.matrix.lookAt(new Vector3(0,0,100), cube.position, new Vector3(0,1,0))
+                  // cone.updateMatrix()
+
+                  function update() {
+                    myGroup.rotation.y += 0.05
+                    myGroup.position.x += 0.01
+                      //  cube.rotation.y += 0.05;
+                      //  cube.rotation.x += 0.025;
+                  }
 
                   // Setup an animation loop
                   const render = () => {
                       timeout = requestAnimationFrame(render);
-                      //update();
+                      update();
                       renderer.render(scene, camera);
                       gl.endFrameEXP();
                   };
@@ -111,10 +118,10 @@ class ConeMesh extends Mesh {
         //map: new TextureLoader().load(require('./assets/icon.png')),
          color: 0xffff00
       }));
-      this.applyMatrix4(new Matrix4().makeRotationFromEuler(new Euler(
-        0*Math.PI/180,
-        0*Math.PI/180,
-        90*Math.PI/180))) //new Vector3(Math.PI / 2, Math.PI, 0)))
+      // this.applyMatrix4(new Matrix4().makeRotationFromEuler(new Euler(
+      //   0*Math.PI/180,
+      //   0*Math.PI/180,
+      //   90*Math.PI/180))) //new Vector3(Math.PI / 2, Math.PI, 0)))
   }
 }
 class IconMesh extends Mesh {

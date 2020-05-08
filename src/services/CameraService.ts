@@ -24,22 +24,25 @@ export default class CameraService {
 
 
     readonly rotateAroundLookUpPoint = (angleInDegs: number, axis: Vector3, lookAt:Vector3) => {
+        
+        ////OLD
+        // //Pega a pos da camera
+        // const cameraWorldPosition = new Vector3();
+        // this.camera.getWorldPosition(cameraWorldPosition);
+        // //Vetor do look at pra camera
+        // const lookAtToEyeVector = cameraWorldPosition.sub(lookAt);
+        // this.printVector("lookAtEyeVector", lookAtToEyeVector);
+        // console.log("distance", lookAtToEyeVector.length())
+        // //Rotacao
+        // lookAtToEyeVector.applyAxisAngle(axis, angleInDegs * Math.PI / 180);
+        // //Altera o eye
+        // this.camera.position.copy(lookAtToEyeVector);
+        // this.camera.updateMatrix();
+        // //Aplica o lookAt
+        // this.camera.lookAt(lookAt);
+        // this.camera.updateMatrix();
 
-        //Pega a pos da camera
-        const cameraWorldPosition = new Vector3();
-        this.camera.getWorldPosition(cameraWorldPosition);
-        //Vetor do look at pra camera
-        const lookAtToEyeVector = cameraWorldPosition.sub(lookAt);
-        this.printVector("lookAtEyeVector", lookAtToEyeVector);
-        console.log("distance", lookAtToEyeVector.length())
-        //Rotacao
-        lookAtToEyeVector.applyAxisAngle(axis, angleInDegs * Math.PI / 180);
-        //Altera o eye
-        this.camera.position.copy(lookAtToEyeVector);
-        this.camera.updateMatrix();
-        //Aplica o lookAt
-        this.camera.lookAt(lookAt);
-        this.camera.updateMatrix();
+        //// MUITO OLD
         // //1)Preciso pegar o vetor entre o foco e o olho, indo do foco pro olho.
         // const cameraWorldDirection = new Vector3();
         // const cameraWorldPosition = new Vector3();
