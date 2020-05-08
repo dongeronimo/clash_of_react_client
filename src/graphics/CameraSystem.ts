@@ -3,18 +3,20 @@
 /////TODO: 3) Ter referência à camera
 /////TODO: 4) Atualizar camera no render()
 /////TODO: 5) Translate
-//TODO: 6) Rotate around center
+/////TODO: 6) Rotate around center
 //TODO: 7) Dolly in/out
 //TODO: 8) Rotate around eye
+//TODO: 9) Zoom
 
 import { ConeBufferGeometry, BoxBufferGeometry, MeshStandardMaterial, Mesh, Group, Scene, Camera, Vector3, PerspectiveCamera } from "three"
 
-//TODO: 9) Zoom
+
 export class CameraSystem{
     private readonly focus:FocusMesh;
     private readonly eye:EyeMesh;
     private readonly group:Group;
     readonly camera:PerspectiveCamera;
+    private distance:number;
     constructor(scene:Scene, focusPos:Vector3, eyePos:Vector3, 
         screenwidth:number, screenheight:number){
         this.focus = new FocusMesh();
@@ -28,6 +30,7 @@ export class CameraSystem{
         scene.add(this.group);
         this.camera = CameraSystem.createCamera(eyePos.x, eyePos.y, eyePos.z,
             focusPos.x, focusPos.y, focusPos.z,screenwidth, screenheight)
+        this.distance = this.focus.position.distanceTo(this.eye.position);
     }
 
     static createCamera(eyeX:number, eyeY:number, eyeZ:number, 
@@ -53,14 +56,20 @@ export class CameraSystem{
         this.camera.lookAt(this.cameraWorldLookAtPosition);
         this.camera.updateMatrix();
     }
-    setPosition(x:number, y:number, z:number){
+    moveTo(x:number, y:number, z:number){
         this.group.position.set(x, y, z);
         this.update();
     }    
     getPosition():Vector3{
         return this.cameraWorldLookAtPosition;
     }
+    rotateAroundCenter(rotationAxis:Vector3, angle:number){
+        this.group.rotateOnAxis(rotationAxis, angle);
+        this.update();
+    }
+    dolly(distance:number){
 
+    }
 }
 
 
