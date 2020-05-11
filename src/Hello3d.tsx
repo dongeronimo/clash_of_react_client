@@ -92,11 +92,21 @@ export default function Hello3d() {
                   // cone.updateMatrix()
 
                   //NEW
-                  const cameraSystem:CameraSystem = new CameraSystem(scene, new Vector3(0,0,0), new Vector3(3,2,0),width, height);
-                  
+                  const cameraSystem:CameraSystem = new CameraSystem(scene, 
+                    new Vector3(0,0,0), new Vector3(3,2,0),width, height);
+                  let dolly = 0.01;
                   function update() {
                     cameraSystem.moveTo(cameraSystem.getPosition().x+0.01, 0, 0);
                     cameraSystem.rotateAroundCenter(new Vector3(0,1,0), 1 * Math.PI/180);
+                    dolly = dolly + 0.01;
+                    cameraSystem.dolly(dolly);
+                    
+                    //cameraSystem.update();
+                    // let dist = cameraSystem.getDistance();
+                    // dist = dist + 0.5;
+                    // cameraSystem.dolly(dist);
+                    //cameraSystem.moveTo(cameraSystem.getPosition().x+0.01, 0, 0);
+                    //cameraSystem.rotateAroundCenter(new Vector3(0,1,0), 1 * Math.PI/180);
                     //cameraSystem.update();
 
                     //Rotação e translacao do grupo

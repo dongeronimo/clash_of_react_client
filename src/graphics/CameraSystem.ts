@@ -27,10 +27,14 @@ export class CameraSystem{
         this.group = new Group();
         this.group.add(this.focus);
         this.group.add(this.eye);
+        this.eye.updateMatrix();
+        this.focus.updateMatrix();
         scene.add(this.group);
         this.camera = CameraSystem.createCamera(eyePos.x, eyePos.y, eyePos.z,
             focusPos.x, focusPos.y, focusPos.z,screenwidth, screenheight)
         this.distance = this.focus.position.distanceTo(this.eye.position);
+        this.cameraWorldPosition.copy(eyePos);
+        this.cameraWorldLookAtPosition.copy(focusPos);
     }
 
     static createCamera(eyeX:number, eyeY:number, eyeZ:number, 
@@ -44,14 +48,14 @@ export class CameraSystem{
     private readonly cameraWorldPosition = new Vector3();
     private readonly cameraWorldLookAtPosition = new Vector3();
     update(){
-        this.getWorldEyeAndFocusPositions();
-        this.setCameraPositionAndLookAt();
+        this.fillCameraWorldPositionAndCameraWorldLookAtPosition();
+        this.setCameraObjectUsingWorldPositionAndLookAtPosition();
     }
-    private getWorldEyeAndFocusPositions(){
+    private fillCameraWorldPositionAndCameraWorldLookAtPosition(){
         this.eye.getWorldPosition(this.cameraWorldPosition);
         this.group.getWorldPosition(this.cameraWorldLookAtPosition);
     }
-    private setCameraPositionAndLookAt(){
+    private setCameraObjectUsingWorldPositionAndLookAtPosition(){
         this.camera.position.copy(this.cameraWorldPosition);
         this.camera.lookAt(this.cameraWorldLookAtPosition);
         this.camera.updateMatrix();
@@ -67,8 +71,26 @@ export class CameraSystem{
         this.group.rotateOnAxis(rotationAxis, angle);
         this.update();
     }
+    getDistance():number{
+        return this.cameraWorldLookAtPosition.distanceTo(this.cameraWorldPosition);
+    }
+    
     dolly(distance:number){
-
+        console.log(this.focus.position)
+        console.log(this.eye.position)
+        const invertedCameraDirectionVector = new Vector3();
+        this.camera.getWorldDirection(invertedCameraDirectionVector);
+        invertedCameraDirectionVector.multiplyScalar(-1);
+        invertedCameraDirectionVector.multiplyScalar(distance);
+        this.eye.position.copy(invertedCameraDirectionVector);
+        this.update();
+        
+        // const _eyePos = new Vector3()
+        // this.eye.position.copy(_eyePos);
+        // const _focusPos = new Vector3();
+        // this.focus.position.copy(_focusPos);
+        // const oldDistance = _eyePos.distanceTo(_focusPos);
+        // console.log(oldDistance)
     }
 }
 
@@ -91,4 +113,8 @@ class EyeMesh extends Mesh {
               }));
         this.visible = false;
     }
+}
+
+export function printVector(text:string, vec:Vector3){
+    console.log(`${text}: ${vec.x}, ${vec.y}, ${vec.z}`);
 }
