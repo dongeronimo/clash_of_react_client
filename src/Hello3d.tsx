@@ -79,7 +79,7 @@ export default function Hello3d() {
                   let dolly = 0.01;
                   function update() {
                     //cameraSystem.moveTo(cameraSystem.getPosition().x+0.01, 0, 0);
-                    //cameraSystem.rotateAroundCenter(new Vector3(0,1,0), 1 * Math.PI/180);
+                    cameraSystem.rotateAroundCenter(new Vector3(0,1,0), 1 * Math.PI/180);
                     dolly = dolly + 0.01;
                     cameraSystem.dolly(dolly)
                   }
