@@ -102,7 +102,7 @@ export class CameraSystem{
         this.camera.getWorldDirection(invertedCameraDirectionVector);
         invertedCameraDirectionVector.multiplyScalar(-1* distance);
         this.eyeObject.position.copy(invertedCameraDirectionVector);
-        this.eyeObject.updateMatrix();
+        this.update();
         // console.log(this.focusObject.position)
         // console.log(this.eyeObject.position)
         // const invertedCameraDirectionVector = new Vector3();
