@@ -76,13 +76,15 @@ export default function Hello3d() {
 
                   const cameraSystem:CameraSystem = new CameraSystem(scene, 
                     new Vector3(0,0,0), new Vector3(3,2,0),width, height);
-                  let dolly = 0.01;
+                  let dolly = 2;
+                  let x = 0;
                   function update() {
-                    cameraSystem.modify(0,0,0, new Vector3(), 0, dolly)
+                    cameraSystem.modify(x,0,0, new Vector3(), 0, dolly)
                     // //cameraSystem.moveTo(cameraSystem.getPosition().x+0.01, 0, 0);
                     // cameraSystem.dolly(dolly)
                     // //cameraSystem.rotateAroundCenter(new Vector3(0,1,0), 1 * Math.PI/180);
                     dolly = dolly + 0.01;
+                    x = x+0.1
                     
                   }
 
