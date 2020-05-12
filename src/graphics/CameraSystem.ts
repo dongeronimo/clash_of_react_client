@@ -76,9 +76,22 @@ export class CameraSystem{
         camera.lookAt(lookX, lookY, lookZ);
         return camera;
     }
+    modify(x:number, y:number, z:number, rotationAxis:Vector3, angle:number, distance:number){
+        //Move a camera no espaço
+        this.cameraGroup.position.set(x,y,z);
+
+        //pega as posicoes globais
+        this.eyeObject.getWorldPosition(this.worldEyePos);
+        this.cameraGroup.getWorldPosition(this.worldFocusPos);
+        //aplica à camera
+        this.camera.position.copy(this.worldEyePos);
+        this.camera.lookAt(this.worldFocusPos);
+        
+    }
     update(){
         //Pega as posiçoes do objeto do foco e do objeto do olho
         this.eyeObject.getWorldPosition(this.worldEyePos);
+        console.log("eye object", this.worldEyePos)
         this.cameraGroup.getWorldPosition(this.worldFocusPos);
         this.distance = this.worldEyePos.distanceTo(this.worldFocusPos);
         //Aplica essas posiçoes à camera
@@ -92,7 +105,6 @@ export class CameraSystem{
         this.update();
     }    
     rotateAroundCenter(rotationAxis:Vector3, angle:number){
-        //Se o grupo rotaciona todos os objetos ao redor do grupo rotacionam.
         this.cameraGroup.rotateOnAxis(rotationAxis, angle);
         this.update();
     }
@@ -103,21 +115,7 @@ export class CameraSystem{
         invertedCameraDirectionVector.multiplyScalar(-1* distance);
         this.eyeObject.position.copy(invertedCameraDirectionVector);
         this.update();
-        // console.log(this.focusObject.position)
-        // console.log(this.eyeObject.position)
-        // const invertedCameraDirectionVector = new Vector3();
-        // this.camera.getWorldDirection(invertedCameraDirectionVector);
-        // invertedCameraDirectionVector.multiplyScalar(-1);
-        // invertedCameraDirectionVector.multiplyScalar(distance);
-        // this.eyeObject.position.copy(invertedCameraDirectionVector);
-        // this.update();
-        
-        // const _eyePos = new Vector3()
-        // this.eye.position.copy(_eyePos);
-        // const _focusPos = new Vector3();
-        // this.focus.position.copy(_focusPos);
-        // const oldDistance = _eyePos.distanceTo(_focusPos);
-        // console.log(oldDistance)
+
     }
     getPosition():Vector3{
         return this.worldFocusPos;
