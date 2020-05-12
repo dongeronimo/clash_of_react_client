@@ -7,7 +7,7 @@
 //TODO: 7) Dolly in/out
 //TODO: 8) Rotate around eye
 //TODO: 9) Zoom
-
+//TODO: 10) Validate if it works when starting position not [0,0,0]
 import { ConeBufferGeometry, BoxBufferGeometry, MeshStandardMaterial, Mesh, Group, Scene, Camera, Vector3, PerspectiveCamera, Object3D } from "three"
 
 
@@ -16,17 +16,29 @@ export class CameraSystem{
     private readonly eyeObject:EyeMesh;
     private readonly cameraGroup:Group;
     readonly camera:PerspectiveCamera;
-    private readonly worldEyePos = new Vector3();
-    private readonly worldFocusPos = new Vector3();
+    private readonly worldEyePos:Vector3;
+    private readonly worldFocusPos:Vector3;
     private distance:number;
     constructor(scene:Scene, focusPos:Vector3, eyePos:Vector3, 
         screenwidth:number, screenheight:number){
-        [this.focusObject, this.worldFocusPos] = this.createFocusObject(focusPos);
-        [this.eyeObject, this.worldEyePos] = this.createEyeObject(focusPos, eyePos);
-        [this.cameraGroup, this.distance] = this.createGroup(this.focusObject, this.eyeObject);
-    
-        scene.add(this.cameraGroup);
-        this.camera = CameraSystem.createCamera(eyePos.x, eyePos.y, eyePos.z,
+            this. focusObject = new FocusMesh();
+            this.focusObject.position.copy(focusPos);
+            this.worldFocusPos = new Vector3();
+            this.worldFocusPos.copy(focusPos)
+            
+            this.eyeObject = new EyeMesh();
+            this.eyeObject.position.copy(eyePos);
+            this.worldEyePos = new Vector3();
+            this.worldEyePos.copy(eyePos);
+            this.eyeObject.lookAt(focusPos);
+
+            this.cameraGroup = new Group();
+            this.cameraGroup.add(this.focusObject);
+            this.cameraGroup.add(this.eyeObject);
+            this.distance = this.focusObject.position.distanceTo(this.eyeObject.position);
+            scene.add(this.cameraGroup);
+            
+            this.camera = CameraSystem.createCamera(eyePos.x, eyePos.y, eyePos.z,
             focusPos.x, focusPos.y, focusPos.z,screenwidth, screenheight)
         
     }
@@ -45,14 +57,17 @@ export class CameraSystem{
         const worldEyePos = eyePos;
         return [eyeObject, worldEyePos];
     }
-    private createGroup(focusObject:Object3D, eyeObject:Object3D):[Group, number]{
+    private createGroup(focusObject:Object3D, eyeObject:Object3D, scene:Scene):[Group, number]{
+        if(!focusObject)throw new Error("focusObject is null");
+        if(!eyeObject)throw new Error("eyeObject is null");
+        if(!scene)throw new Error("scene is null")
         const cameraGroup = new Group();
         cameraGroup.add(focusObject);
         cameraGroup.add(eyeObject);
         const distance = focusObject.position.distanceTo(eyeObject.position);
+        scene.add(this.cameraGroup);
         return [cameraGroup, distance];
     }
-
     static createCamera(eyeX:number, eyeY:number, eyeZ:number, 
         lookX:number, lookY:number, lookZ:number,
         width:number, height:number):PerspectiveCamera{
@@ -62,42 +77,40 @@ export class CameraSystem{
         return camera;
     }
     update(){
-        this.fillCameraWorldPositionAndCameraWorldLookAtPosition();
-        this.setCameraObjectUsingWorldPositionAndLookAtPosition();
-    }
-    private fillCameraWorldPositionAndCameraWorldLookAtPosition(){
+        //Pega as posiçoes do objeto do foco e do objeto do olho
         this.eyeObject.getWorldPosition(this.worldEyePos);
         this.cameraGroup.getWorldPosition(this.worldFocusPos);
-    }
-    private setCameraObjectUsingWorldPositionAndLookAtPosition(){
+        this.distance = this.worldEyePos.distanceTo(this.worldFocusPos);
+        //Aplica essas posiçoes à camera
         this.camera.position.copy(this.worldEyePos);
-        this.camera.lookAt(this.worldFocusPos);
-        this.camera.updateMatrix();
+        this.camera.lookAt(this.worldFocusPos)
+        this.camera.updateMatrix()
     }
     moveTo(x:number, y:number, z:number){
+        //Se o grupo se move todos os objetos nele se movem..
         this.cameraGroup.position.set(x, y, z);
         this.update();
     }    
-    getPosition():Vector3{
-        return this.worldFocusPos;
-    }
     rotateAroundCenter(rotationAxis:Vector3, angle:number){
+        //Se o grupo rotaciona todos os objetos ao redor do grupo rotacionam.
         this.cameraGroup.rotateOnAxis(rotationAxis, angle);
         this.update();
     }
-    getDistance():number{
-        return this.worldFocusPos.distanceTo(this.worldEyePos);
-    }
     
     dolly(distance:number){
-        console.log(this.focusObject.position)
-        console.log(this.eyeObject.position)
         const invertedCameraDirectionVector = new Vector3();
         this.camera.getWorldDirection(invertedCameraDirectionVector);
-        invertedCameraDirectionVector.multiplyScalar(-1);
-        invertedCameraDirectionVector.multiplyScalar(distance);
+        invertedCameraDirectionVector.multiplyScalar(-1* distance);
         this.eyeObject.position.copy(invertedCameraDirectionVector);
-        this.update();
+        this.eyeObject.updateMatrix();
+        // console.log(this.focusObject.position)
+        // console.log(this.eyeObject.position)
+        // const invertedCameraDirectionVector = new Vector3();
+        // this.camera.getWorldDirection(invertedCameraDirectionVector);
+        // invertedCameraDirectionVector.multiplyScalar(-1);
+        // invertedCameraDirectionVector.multiplyScalar(distance);
+        // this.eyeObject.position.copy(invertedCameraDirectionVector);
+        // this.update();
         
         // const _eyePos = new Vector3()
         // this.eye.position.copy(_eyePos);
@@ -105,6 +118,12 @@ export class CameraSystem{
         // this.focus.position.copy(_focusPos);
         // const oldDistance = _eyePos.distanceTo(_focusPos);
         // console.log(oldDistance)
+    }
+    getPosition():Vector3{
+        return this.worldFocusPos;
+    }
+    getDistance():number{
+        return this.distance;
     }
 }
 

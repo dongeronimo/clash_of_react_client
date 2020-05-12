@@ -73,67 +73,14 @@ export default function Hello3d() {
                   spotLight.position.set(0, 500, 100);
                   spotLight.lookAt(scene.position);
                   scene.add(spotLight);
-                  
-                  //cube = new IconMesh();
-                  //scene.add(cube);
 
-                  //cone = new ConeMesh();
-                  //cone.visible = false
-                  //scene.add(cone);
-
-                  //cone.position.set(3,2,0);
-                  
-                  //const myGroup = new Group();
-                  //myGroup.add(cube)
-                  //myGroup.add(cone);
-
-                  //scene.add(myGroup);
-                  // cone.matrix.lookAt(new Vector3(0,0,100), cube.position, new Vector3(0,1,0))
-                  // cone.updateMatrix()
-
-                  //NEW
                   const cameraSystem:CameraSystem = new CameraSystem(scene, 
                     new Vector3(0,0,0), new Vector3(3,2,0),width, height);
                   let dolly = 0.01;
                   function update() {
-                    cameraSystem.moveTo(cameraSystem.getPosition().x+0.01, 0, 0);
-                    cameraSystem.rotateAroundCenter(new Vector3(0,1,0), 1 * Math.PI/180);
-                    dolly = dolly + 0.01;
-                    cameraSystem.dolly(dolly);
-                    
-                    //cameraSystem.update();
-                    // let dist = cameraSystem.getDistance();
-                    // dist = dist + 0.5;
-                    // cameraSystem.dolly(dist);
                     //cameraSystem.moveTo(cameraSystem.getPosition().x+0.01, 0, 0);
                     //cameraSystem.rotateAroundCenter(new Vector3(0,1,0), 1 * Math.PI/180);
-                    //cameraSystem.update();
-
-                    //Rotação e translacao do grupo
-                    // myGroup.rotation.y += 0.05;
-                    // myGroup.position.x += 0.01;
-                    // //Pega os atributos necessários
-                    // const cameraWorldPosition = new Vector3();
-                    // cone.getWorldPosition(cameraWorldPosition);
-                    // const cameraWorldLookAt = new Vector3();
-                    // myGroup.getWorldPosition(cameraWorldLookAt);
-                    // //move camera
-                    // camera.position.copy(cameraWorldPosition);
-                    // camera.lookAt(cameraWorldLookAt);
-                    // camera.updateMatrix();
-
-                    // myGroup.rotation.y += 0.05;
-                    // myGroup.position.x += 0.01;
-                    // const cameraPosition = new Vector3(0,0,0);
-                    // cone.getWorldPosition(cameraPosition);
-                    // const cameraQuaternion = new Quaternion();
-                    // myGroup.getWorldQuaternion(cameraQuaternion)
-                    // camera.quaternion.copy(cameraQuaternion);
-                    // camera.updateMatrix();
-                    // //camera.position.copy(cameraPosition);
-                    // camera.updateMatrix();
-                      //  cube.rotation.y += 0.05;
-                      //  cube.rotation.x += 0.025;
+                    //dolly = dolly + 0.01;
                   }
 
                   // Setup an animation loop
