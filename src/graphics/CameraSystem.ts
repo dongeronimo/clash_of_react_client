@@ -77,17 +77,9 @@ export class CameraSystem{
         return camera;
     }
     modify(x:number, y:number, z:number, rotationAxis:Vector3, angle:number, distance:number){
-        //Aproxima/afasta de acordo com o dolly
-        // const localEyePos = new Vector3();
-        // const localCenterPos = new Vector3();
-        // localEyePos.copy(this.eyeObject.position);
-        // localCenterPos.copy(this.focusObject.position);
-        // const fromFocusToEye = localEyePos.min(localCenterPos);
-        // const normalizedFocusToEye = fromFocusToEye.normalize();
-        // let newEyePosInLocalCoordinate = normalizedFocusToEye.multiplyScalar(distance);
-        // newEyePosInLocalCoordinate = newEyePosInLocalCoordinate.min(new Vector3(x,y,z))
-        // this.eyeObject.position.copy(newEyePosInLocalCoordinate);
-
+        //Rotates around center
+        this.cameraGroup.rotateOnAxis(rotationAxis, angle)
+        this.cameraGroup.updateMatrix();
         //Move a camera no espaço
         this.cameraGroup.position.set(x,y,z);
         //dolly da camera
@@ -107,11 +99,6 @@ export class CameraSystem{
         //aplica à camera
         this.camera.position.copy(this.worldEyePos);
         this.camera.lookAt(this.worldFocusPos);
-        
-        printVector("eye (world)", this.worldEyePos);
-        printVector("focus (world)", this.worldFocusPos);
-        printVector("eye (local)", this.eyeObject.position);
-        printVector("focus (local)", this.focusObject.position);
     }
     update(){
         //Pega as posiçoes do objeto do foco e do objeto do olho
